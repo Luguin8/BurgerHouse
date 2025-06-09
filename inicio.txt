@@ -1,0 +1,59 @@
+INSTRUCCIONES PARA INICIAR EL PROYECTO BURGER HOUSE 🍔
+
+1. INICIAR EL BACKEND:
+   - Abrir una terminal
+   - Navegar a la carpeta backend: cd backend
+   - Instalar dependencias (si es la primera vez): npm install
+   - Iniciar el servidor: npm start
+   - El servidor se iniciará en: http://localhost:3000
+
+2. INICIAR EL FRONTEND:
+   - Abrir el archivo frontend/index.html en el navegador
+   - O usar Live Server de VS Code:
+     * Click derecho en index.html
+     * Seleccionar "Open with Live Server"
+     * Se abrirá en: http://127.0.0.1:5500/frontend/index.html
+
+3. BASE DE DATOS:
+   - La base de datos SQLite se crea automáticamente
+   - Ubicación: backend/db/database.sqlite
+   - No requiere configuración adicional
+
+4. PANEL DE ADMINISTRACIÓN:
+   - URL: frontend/admin.html
+   - Credenciales por defecto:
+     * Contraseña: admin123
+
+5. ENDPOINTS PRINCIPALES:
+   - Productos: http://localhost:3000/api/products
+   - Pedidos: http://localhost:3000/api/orders
+   - Autenticación: http://localhost:3000/api/auth
+
+6. ARCHIVOS IMPORTANTES:
+   - Configuración principal: backend/config.js
+   - Estilos: frontend/styles.css
+   - JavaScript principal: frontend/scripts.js
+   - Gestión de productos: frontend/js/products.js
+
+7. COMANDOS ÚTILES:
+   - Exportar pedidos: Desde el panel de administración
+   - Limpiar base de datos: Eliminar archivo database.sqlite
+   - Ver cambios recientes: Ver archivo cambios.txt
+
+8. DESARROLLO:
+   - Los cambios en el frontend son inmediatos
+   - Los cambios en el backend requieren reiniciar el servidor
+   - Usar el archivo cambios.txt para documentar modificaciones
+
+9. GITHUB:
+   - Repositorio: https://github.com/Luguin8/BurgerHouse
+   - Para actualizar:
+     * git add .
+     * git commit -m "Descripción del cambio"
+     * git push
+
+NOTAS:
+- Mantener Node.js actualizado
+- Verificar que los puertos 3000 y 5500 estén disponibles
+- Revisar cambios.txt para ver el historial de actualizaciones
+- Hacer backup de la base de datos si contiene datos importantes 
