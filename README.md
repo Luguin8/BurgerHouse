@@ -60,7 +60,9 @@ burger-house/
 
 ## Licencia 📄
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está protegido bajo una licencia propietaria. Todos los derechos están reservados y su uso, modificación o distribución está estrictamente prohibido sin autorización expresa por escrito.
+
+Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Contacto 📧
 
