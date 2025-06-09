@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger House</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Burger House</div>
+            <div class="nav-links">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="promo-section">
+            <h2>Promoción del Día</h2>
+            <div class="promo-card">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3" alt="Promo">
+                <h3>Combo Especial</h3>
+                <p>Hamburguesa doble + papas + gaseosa</p>
+                <p class="price">$2500</p>
+                <button class="view-details-btn" onclick="showBurgerDetails({
+                    id: 'promo1',
+                    name: 'Combo Especial',
+                    description: 'Hamburguesa doble + papas + gaseosa',
+                    price: 2500,
+                    type: 'Promoción',
+                    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3'
+                })">Ver Detalles</button>
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <h2>Nuestras Hamburguesas</h2>
+            <div class="burger-grid">
+                <!-- Las hamburguesas se cargarán dinámicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Detalles de Hamburguesa -->
+    <div id="burger-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description"></p>
+            <p id="modal-type"></p>
+            <p id="modal-price"></p>
+            <div id="burger-options" class="burger-options">
+                <div class="burger-option" onclick="selectOption(this, 'simple')">
+                    <h4>Simple</h4>
+                    <p>1 medallón de carne</p>
+                    <p class="option-price" id="simple-price">$0</p>
+                </div>
+                <div class="burger-option" onclick="selectOption(this, 'doble')">
+                    <h4>Doble</h4>
+                    <p>2 medallones de carne</p>
+                    <p class="option-price" id="doble-price">$0</p>
+                </div>
+            </div>
+            <button id="modal-add-to-cart" class="view-details-btn">Añadir al Carrito</button>
+        </div>
+    </div>
+
+    <!-- Modal del Carrito -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content cart-modal-content">
+            <span class="close">&times;</span>
+            <h2>Tu Carrito</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                <span>Total:</span>
+                <span>$<span id="cart-total-amount">0</span></span>
+            </div>
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label>Tipo de Entrega:</label>
+                    <div class="delivery-options">
+                        <div class="delivery-option" onclick="selectDeliveryOption('local')">
+                            Retirar en Local
+                        </div>
+                        <div class="delivery-option" onclick="selectDeliveryOption('delivery')">
+                            Delivery
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="address-group" style="display: none;">
+                    <label for="address">Dirección de Entrega:</label>
+                    <textarea id="address" placeholder="Ingresa tu dirección completa"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="observations">Observaciones:</label>
+                    <textarea id="observations" placeholder="¿Alguna preferencia especial? (ej: sin cebolla)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="payment-method">Método de Pago:</label>
+                    <select id="payment-method" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta</option>
+                    </select>
+                </div>
+                <button type="submit">Realizar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        // Array de imágenes de stock para hamburguesas
+        const burgerImages = [
+            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3',
+            'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3',
+            'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3',
+            'https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3',
+            'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?ixlib=rb-4.0.3',
+            'https://images.unsplash.com/photo-1553979459-d2229ba7433b?ixlib=rb-4.0.3'
+        ];
+
+        let currentBurger = null;
+        let selectedOption = null;
+        let deliveryType = null;
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar productos en la página
+            const burgerGrid = document.querySelector('.burger-grid');
+            const products = productsModule.getAllProducts();
+            
+            burgerGrid.innerHTML = products
+                .filter(burger => burger.active)
+                .map((burger, index) => {
+                    // Asignar una imagen de stock de manera cíclica
+                    const stockImage = burgerImages[index % burgerImages.length];
+                    return `
+                        <div class="burger-card" data-id="${burger.id}">
+                            <img src="${burger.image || stockImage}" alt="${burger.name}">
+                            <h3>${burger.name}</h3>
+                            <p>${burger.description}</p>
+                            <p class="price">$${burger.price}</p>
+                            <button class="view-details-btn" onclick="showBurgerDetails(${burger.id})">Ver Detalles</button>
+                        </div>
+                    `;
+                }).join('');
+
+            // Inicializar el módulo del carrito
+            cartModule.init();
+
+            // Event listeners para cerrar modales
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                    resetOptions();
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                    resetOptions();
+                }
+            });
+
+            // Event listener para el botón de añadir al carrito en el modal
+            document.getElementById('modal-add-to-cart').addEventListener('click', () => {
+                if (!currentBurger || !selectedOption) {
+                    showNotification('Por favor selecciona una opción');
+                    return;
+                }
+
+                const finalPrice = selectedOption === 'doble' 
+                    ? currentBurger.price + 500 
+                    : currentBurger.price;
+
+                const burgerToAdd = {
+                    ...currentBurger,
+                    price: finalPrice,
+                    name: `${currentBurger.name} ${selectedOption === 'doble' ? '(Doble)' : '(Simple)'}`,
+                    option: selectedOption
+                };
+
+                cartModule.addToCart(burgerToAdd);
+                document.getElementById('burger-modal').style.display = 'none';
+                resetOptions();
+            });
+        });
+
+        // Función para mostrar detalles de la hamburguesa
+        function showBurgerDetails(burger) {
+            // Si es un ID, buscar en los productos
+            if (typeof burger === 'number' || typeof burger === 'string') {
+                burger = productsModule.getProductById(burger);
+                if (!burger) return;
+            }
+
+            currentBurger = burger;
+            document.getElementById('modal-title').textContent = burger.name;
+            document.getElementById('modal-description').textContent = burger.description;
+            document.getElementById('modal-type').textContent = `Tipo: ${burger.type}`;
+            document.getElementById('modal-price').textContent = `Precio: $${burger.price}`;
+            
+            // Actualizar precios de las opciones
+            document.getElementById('simple-price').textContent = `$${burger.price}`;
+            document.getElementById('doble-price').textContent = `$${burger.price + 500}`;
+            
+            document.getElementById('burger-modal').style.display = 'block';
+        }
+
+        // Función para seleccionar una opción
+        function selectOption(element, option) {
+            document.querySelectorAll('.burger-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedOption = option;
+        }
+
+        // Función para seleccionar tipo de entrega
+        function selectDeliveryOption(option) {
+            document.querySelectorAll('.delivery-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            deliveryType = option;
+            
+            const addressGroup = document.getElementById('address-group');
+            if (option === 'delivery') {
+                addressGroup.style.display = 'block';
+                document.getElementById('address').required = true;
+            } else {
+                addressGroup.style.display = 'none';
+                document.getElementById('address').required = false;
+            }
+        }
+
+        // Función para resetear las opciones
+        function resetOptions() {
+            currentBurger = null;
+            selectedOption = null;
+            document.querySelectorAll('.burger-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+        }
+
+        // Función para mostrar notificaciones
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

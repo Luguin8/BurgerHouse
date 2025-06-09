@@ -1,0 +1,111 @@
+REGISTRO DE CAMBIOS DEL PROYECTO
+
+Cambio #1
+Archivos: backend/routes/auth.js, backend/routes/products.js, backend/routes/orders.js
+Líneas modificadas: Archivos completos
+Explicación técnica: Implementación de rutas modulares para autenticación, productos y órdenes utilizando Express Router. Configuración de middleware de autenticación y manejo de base de datos SQLite.
+Explicación simple: Creamos la estructura básica del backend para manejar usuarios, productos y pedidos.
+
+Cambio #2
+Archivo: frontend/js/products.js
+Líneas modificadas: Todo el archivo
+Explicación técnica: Implementación del patrón módulo para el manejo de productos, encapsulando la lógica de productos y exponiendo métodos públicos.
+Explicación simple: Creamos un archivo que guarda y maneja toda la información de las hamburguesas.
+
+Cambio #3
+Archivo: frontend/js/cart.js
+Líneas modificadas: Todo el archivo
+Explicación técnica: Implementación del patrón módulo para el carrito, con manejo de estado local y persistencia en localStorage.
+Explicación simple: Creamos un archivo que maneja todo lo relacionado con el carrito de compras.
+
+Cambio #4
+Archivo: frontend/index.html
+Líneas modificadas: Scripts y eventos
+Explicación técnica: Reorganización de la lógica de inicialización y eventos, implementación de manejo de modales y integración con los módulos de productos y carrito.
+Explicación simple: Actualizamos la página principal para que use los nuevos archivos de productos y carrito.
+
+Cambio #5
+Archivo: frontend/index.html
+Líneas modificadas: Botones de "Añadir al Carrito"
+Explicación técnica: Corrección de la serialización de objetos en los eventos onclick. Se implementó un escape seguro de las comillas dobles usando &quot; y se mejoró la forma de pasar los objetos a los eventos onclick.
+Explicación simple: Arreglamos los botones de "Añadir al Carrito" que no funcionaban por un problema con las comillas en el código.
+
+Cambio #6
+Archivo: frontend/styles.css
+Líneas modificadas: Grid de hamburguesas y estilos de modal
+Explicación técnica: Implementación de grid layout con 3 columnas fijas, media queries para responsividad, y nuevos estilos para el modal de opciones de hamburguesa.
+Explicación simple: Organizamos las hamburguesas en 3 columnas y agregamos estilos para el nuevo modal de opciones.
+
+Cambio #7
+Archivo: frontend/index.html
+Líneas modificadas: Estructura HTML y JavaScript
+Explicación técnica: Implementación del modal de opciones para hamburguesas, lógica de selección de opciones (simple/doble) y cálculo dinámico de precios. Se agregaron variables de estado para tracking de selección.
+Explicación simple: Agregamos la funcionalidad para elegir entre hamburguesa simple o doble antes de añadir al carrito.
+
+8. Cambios Estéticos y Funcionales (27/03/2024):
+   - Cambio de esquema de colores: fondo negro y elementos en naranja fuerte
+   - Eliminación del botón "Añadir al carrito" en las cards, manteniendo solo "Ver detalles"
+   - Eliminación del enlace "Menú" en la navegación
+   - Agregada animación a los títulos "Promoción del día" y "Nuestras hamburguesas"
+   - Reubicación de la sección "Promoción del día" al inicio de la página
+   - Mejoras en el formulario de pedido:
+     * Agregadas opciones de "Retirar en local" y "Delivery"
+     * Campo de dirección condicional según tipo de entrega
+     * Nuevo campo para observaciones y preferencias
+   - Actualización visual del panel de administrador con el nuevo esquema de colores
+   - Agregadas imágenes de stock para las hamburguesas
+   - Mejoras en la visualización del carrito y modales
+   - Corrección del sistema de pedidos para mostrarlos en el panel de administrador
+
+Cambios Técnicos:
+- Actualización del CSS con nuevas variables de color y animaciones
+- Modificación del sistema de modales para mejor visualización
+- Actualización del manejo de pedidos incluyendo nuevos campos
+- Mejora en la gestión de estados del formulario de pedido
+- Optimización de la visualización en dispositivos móviles
+
+9. Mejoras en la Interfaz de Usuario (27/03/2024):
+   - Eliminada la imagen del modal de detalles para una experiencia más limpia
+   - Optimización del carrito para evitar scroll innecesario:
+     * Reducción de espaciados y márgenes
+     * Ajuste de tamaños de fuente
+     * Mejor organización de elementos
+   - Mejoras en la legibilidad:
+     * Color destacado para el tipo de hamburguesa en el carrito
+     * Ajuste de contrastes y colores
+     * Optimización de espacios en formularios
+   - Ajustes en el diseño del modal de detalles:
+     * Estructura más compacta y eficiente
+     * Mejor jerarquía visual de la información
+
+Cambios Técnicos:
+- Actualización de estilos CSS para mejorar la usabilidad
+- Optimización del modal de detalles eliminando elementos innecesarios
+- Ajuste de tamaños y espaciados para mejor aprovechamiento del espacio
+- Mejora en la organización de la información en el carrito 
+
+10. Mejoras en el Panel de Administrador (27/03/2024):
+    - Rediseño completo de la interfaz con tema oscuro:
+      * Nuevo esquema de colores con fondo oscuro y acentos naranjas
+      * Mejor contraste y legibilidad
+      * Secciones claramente diferenciadas
+    - Optimización de la estructura:
+      * Diseño más limpio y moderno
+      * Mejor organización de elementos
+      * Reducción de elementos innecesarios
+    - Mejoras en la usabilidad:
+      * Filtros más accesibles
+      * Botones con mejor feedback visual
+      * Formularios más intuitivos
+    - Cambios técnicos:
+      * Implementación de variables CSS para consistencia
+      * Optimización de estilos para mejor rendimiento
+      * Mejora en la responsividad 
+
+11. Ajustes Visuales en el Panel de Administrador (27/03/2024):
+    - Mejora en la legibilidad:
+      * Ajuste de colores para mejor contraste
+      * Optimización de fondos en modo oscuro
+      * Mejora en la visibilidad de textos y elementos
+    - Mantenimiento de la estructura original
+    - Actualización de estilos para consistencia con el tema principal 
