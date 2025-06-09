@@ -26,28 +26,6 @@ Aplicación web de comida rápida desarrollada con HTML, CSS y JavaScript vanill
   - SQLite
   - JWT para autenticación
 
-## Instalación 🚀
-
-1. Clona el repositorio:
-```bash
-git clone https://github.com/Luguin8/BurgerHouse.git
-cd BurgerHouse
-```
-
-2. Instala las dependencias:
-```bash
-npm install
-```
-
-3. Configura las variables de entorno:
-- Crea un archivo `.env` basado en `.env.example`
-- Ajusta las variables según tu entorno
-
-4. Inicia el servidor:
-```bash
-npm start
-```
-
 ## Estructura del Proyecto 📁
 
 ```
