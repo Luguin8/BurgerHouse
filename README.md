@@ -11,6 +11,7 @@ Aplicación web de comida rápida desarrollada con HTML, CSS y JavaScript vanill
 - Panel de administración para gestión de productos y pedidos (CRUD completo vía API)
 - Diseño responsive y moderno
 - Tema oscuro para mejor experiencia visual
+- **Código completamente documentado y optimizado** (comentarios detallados en español en todo el proyecto)
 
 ## Tecnologías Utilizadas 💻
 
@@ -40,7 +41,7 @@ burger-house/
 │   ├── routes/        # Rutas de la API (productos, pedidos, auth)
 │   ├── data/          # Base de datos SQLite
 │   └── uploads/       # Imágenes subidas por el admin
-├── documentacion/     # Notas y documentación interna
+├── documentacion/     # (NO incluida en el repositorio, solo local)
 └── README.md          # Este archivo
 ```
 
