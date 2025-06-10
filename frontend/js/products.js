@@ -1,88 +1,59 @@
-const productsModule = {
-    products: [
-        {
-            id: 1,
-            name: "Clásica",
-            description: "Medallón de carne, lechuga, tomate, cebolla y nuestra salsa especial",
-            type: "Común",
-            price: 1500,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        },
-        {
-            id: 2,
-            name: "Doble Cheddar",
-            description: "Doble medallón de carne, doble cheddar, bacon y salsa barbacoa",
-            type: "Especial",
-            price: 2200,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        },
-        {
-            id: 3,
-            name: "BBQ Bacon",
-            description: "Medallón de carne, bacon crocante, cebolla caramelizada y salsa BBQ",
-            type: "Especial",
-            price: 2000,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        },
-        {
-            id: 4,
-            name: "Mexicana",
-            description: "Medallón de carne, guacamole, jalapeños, nachos y salsa picante",
-            type: "Especial",
-            price: 1900,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        },
-        {
-            id: 5,
-            name: "Veggie",
-            description: "Medallón de lentejas y vegetales, lechuga, tomate y mayonesa vegana",
-            type: "Común",
-            price: 1700,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        },
-        {
-            id: 6,
-            name: "La Gigante",
-            description: "Triple medallón de carne, triple cheddar, bacon, huevo y salsa especial",
-            type: "Especial",
-            price: 2500,
-            image: "https://via.placeholder.com/200x200",
-            active: true
-        }
-    ],
+// products.js
+// Este archivo contiene la lógica para cargar y mostrar los productos en la página principal y para mostrar los detalles de cada hamburguesa en un modal.
 
-    getAllProducts() {
-        return this.products;
-    },
-
-    getProductById(id) {
-        return this.products.find(p => p.id === id);
-    }
-};
-
-// Funciones de manejo de productos
-function saveProducts(products) {
-    localStorage.setItem('products', JSON.stringify(products));
-}
-
-function initializeProducts() {
-    if (!localStorage.getItem('products')) {
-        saveProducts(productsModule.products);
+/**
+ * Carga los productos desde la API y los muestra en la grilla principal.
+ * Solo muestra productos activos.
+ */
+async function loadProducts() {
+    const burgerGrid = document.querySelector('.burger-grid'); // Contenedor de las hamburguesas
+    try {
+        const response = await fetch('http://localhost:3000/products'); // Llama a la API de productos
+        const data = await response.json();
+        const products = data.products || data; // Soporta respuesta paginada o no
+        burgerGrid.innerHTML = products
+            .filter(burger => burger.active !== false) // Solo productos activos
+            .map((burger) => {
+                // Renderiza cada producto como una card
+                return `
+                    <div class="burger-card" data-id="${burger.id}">
+                        <img src="${burger.image_url ? (burger.image_url.startsWith('/uploads/') ? burger.image_url : '/uploads/' + burger.image_url.replace(/^.*[\\\/]/, '')) : burger.image}" alt="${burger.name}">
+                        <h3>${burger.name}</h3>
+                        <p>${burger.description}</p>
+                        <p class="price">$${burger.price}</p>
+                        <button class="view-details-btn" onclick="showBurgerDetails(${burger.id})">Ver Detalles</button>
+                    </div>
+                `;
+            }).join('');
+    } catch (error) {
+        burgerGrid.innerHTML = '<p>Error al cargar productos.</p>';
+        console.error('Error al cargar productos:', error);
     }
 }
 
-// Inicializar productos al cargar
-initializeProducts();
+/**
+ * Muestra los detalles de una hamburguesa en un modal, obteniendo la info desde la API.
+ * @param {number} burgerId - ID del producto a mostrar
+ */
+async function showBurgerDetails(burgerId) {
+    try {
+        const response = await fetch(`http://localhost:3000/products/${burgerId}`);
+        if (!response.ok) return;
+        const burger = await response.json();
+        window.currentBurger = burger; // Guarda la hamburguesa actual para otras operaciones
+        document.getElementById('modal-title').textContent = burger.name;
+        // document.getElementById('modal-img').src = burger.image_url ? (burger.image_url.startsWith('/uploads/') ? burger.image_url : '/uploads/' + burger.image_url.replace(/^.*[\\\/]/, '')) : burger.image;
+        document.getElementById('modal-description').textContent = burger.description;
+        document.getElementById('modal-type').textContent = `Tipo: ${burger.category || burger.type}`;
+        document.getElementById('modal-price').textContent = `Precio: $${burger.price}`;
+        document.getElementById('simple-price').textContent = `$${burger.price}`;
+        document.getElementById('doble-price').textContent = `$${burger.price + 500}`;
+        document.getElementById('burger-modal').style.display = 'block';
+    } catch (error) {
+        alert('Error al cargar detalles del producto');
+    }
+}
 
-// Exportar funciones y datos
-window.productsModule = {
-    getAllProducts,
-    saveProducts,
-    initializeProducts,
-    getProductById: productsModule.getProductById
-}; 
+// Expone las funciones globalmente para ser usadas desde el HTML inline
+window.loadProducts = loadProducts;
+window.showBurgerDetails = showBurgerDetails; 

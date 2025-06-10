@@ -1,26 +1,53 @@
+// ========================================
+// RUTA DE PEDIDOS - BURGER HOUSE
+// ========================================
+// Gestiona la creación, consulta y actualización de pedidos y sus items.
+
 const express = require('express');
 const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const { authenticateToken, isAdmin } = require('../middlewares/authMiddleware');
 
+// Conexión a la base de datos SQLite
 const db = new sqlite3.Database(path.join(__dirname, '..', 'data', 'database.sqlite'));
 
-// Obtener todas las órdenes (solo admin)
-router.get('/', (req, res) => {
+// ===================== OBTENER TODAS LAS ÓRDENES (SOLO ADMIN) =====================
+router.get('/', authenticateToken, isAdmin, (req, res) => {
     db.all(`
         SELECT orders.*, users.username 
         FROM orders 
-        JOIN users ON orders.user_id = users.id
+        LEFT JOIN users ON orders.user_id = users.id
         ORDER BY orders.created_at DESC
     `, [], (err, orders) => {
         if (err) {
+            console.error('Error al obtener órdenes:', err);
             return res.status(500).json({ error: 'Error al obtener órdenes' });
         }
-        res.json(orders);
+        // Para cada pedido, obtener sus items
+        const getItems = (orderId) => new Promise((resolve, reject) => {
+            db.all('SELECT * FROM order_items WHERE order_id = ?', [orderId], (err, items) => {
+                if (err) {
+                    console.error('Error al obtener items de pedido', orderId, err);
+                    return reject(err);
+                }
+                resolve(items);
+            });
+        });
+        Promise.all(orders.map(async order => {
+            order.items = await getItems(order.id);
+            return order;
+        })).then(ordersWithItems => {
+            console.log('Pedidos enviados al frontend:', ordersWithItems);
+            res.json(ordersWithItems);
+        }).catch((e) => {
+            console.error('Error al obtener items de pedidos:', e);
+            res.status(500).json({ error: 'Error al obtener items de pedidos' });
+        });
     });
 });
 
-// Obtener órdenes del usuario actual
+// ===================== OBTENER ÓRDENES DEL USUARIO ACTUAL =====================
 router.get('/my-orders', (req, res) => {
     const userId = req.user.id; // Asumiendo que el middleware de autenticación agrega el usuario
 
@@ -32,38 +59,59 @@ router.get('/my-orders', (req, res) => {
     });
 });
 
-// Crear una nueva orden
+// ===================== CREAR UNA NUEVA ORDEN =====================
 router.post('/', (req, res) => {
-    const { items, total } = req.body;
-    const userId = req.user.id; // Asumiendo que el middleware de autenticación agrega el usuario
+    const { items, total, deliveryType, address, observations, paymentMethod } = req.body;
+    const userId = req.user && req.user.id ? req.user.id : null;
 
     if (!items || !total) {
+        console.error('Pedido inválido:', req.body);
         return res.status(400).json({ error: 'Se requieren items y total' });
     }
 
     db.run(
-        'INSERT INTO orders (user_id, total, status) VALUES (?, ?, ?)',
-        [userId, total, 'pending'],
+        'INSERT INTO orders (user_id, total, status, delivery_type, address, observations, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [userId, total, 'pending', deliveryType, address, observations, paymentMethod],
         function(err) {
             if (err) {
-                return res.status(500).json({ error: 'Error al crear la orden' });
+                console.error('Error al crear la orden:', err, req.body);
+                return res.status(500).json({ error: 'Error al crear la orden', details: err.message });
             }
 
-            // Aquí podrías agregar lógica adicional para guardar los items de la orden
-            // en una tabla separada si lo necesitas
+            // Insertar los items de la orden
+            if (Array.isArray(items)) {
+                const orderId = this.lastID;
+                const stmt = db.prepare('INSERT INTO order_items (order_id, product_id, name, price, quantity, option) VALUES (?, ?, ?, ?, ?, ?)');
+                for (const item of items) {
+                    if (!item || typeof item !== 'object') {
+                        console.log('Item inválido:', item);
+                        continue;
+                    }
+                    if (typeof item.id === 'undefined' || typeof item.name === 'undefined' || typeof item.price === 'undefined' || typeof item.quantity === 'undefined') {
+                        console.log('Item con campos faltantes:', item);
+                        continue;
+                    }
+                    stmt.run(orderId, item.id, item.name, item.price, item.quantity, item.option || '');
+                }
+                stmt.finalize();
+            }
 
             res.status(201).json({
                 id: this.lastID,
                 user_id: userId,
                 total,
                 status: 'pending',
+                delivery_type: deliveryType,
+                address,
+                observations,
+                payment_method: paymentMethod,
                 created_at: new Date().toISOString()
             });
         }
     );
 });
 
-// Actualizar el estado de una orden (solo admin)
+// ===================== ACTUALIZAR EL ESTADO DE UNA ORDEN (SOLO ADMIN) =====================
 router.put('/:id/status', (req, res) => {
     const { status } = req.body;
     const orderId = req.params.id;
@@ -87,7 +135,7 @@ router.put('/:id/status', (req, res) => {
     );
 });
 
-// Cancelar una orden (usuario o admin)
+// ===================== CANCELAR UNA ORDEN (USUARIO O ADMIN) =====================
 router.delete('/:id', (req, res) => {
     const orderId = req.params.id;
     const userId = req.user.id;
@@ -111,6 +159,15 @@ router.delete('/:id', (req, res) => {
         }
         res.json({ message: 'Orden cancelada correctamente' });
     });
+});
+
+// ===================== ENDPOINTS DE ADMIN (BORRADO MASIVO, ETC) =====================
+router.get('/all', authenticateToken, isAdmin, (req, res) => {
+    // ... existing code ...
+});
+
+router.delete('/all', authenticateToken, isAdmin, (req, res) => {
+    // ... existing code ...
 });
 
 module.exports = router; 

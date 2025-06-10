@@ -212,7 +212,6 @@
         }
 
         .admin-container {
-            display: none;
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
@@ -398,97 +397,324 @@
             opacity: 0.9;
             transform: translateY(-2px);
         }
+
+        .admin-navbar {
+            width: 100vw;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0 2rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 3000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            height: 60px;
+            position: fixed;
+            top: 0;
+        }
+        .admin-navbar-logo {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .admin-navbar-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+        .admin-navbar-links li {
+            display: flex;
+            align-items: center;
+        }
+        .admin-navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .admin-navbar-links a:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+        .logout-btn {
+            background: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #d32f2f;
+        }
+        .admin-section {
+            background: var(--light-color);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            margin-top: 0;
+        }
+        .admin-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        #orders-list table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.97rem;
+        }
+        #orders-list th, #orders-list td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid #222;
+            text-align: left;
+        }
+        #orders-list th {
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+        }
+        #orders-list tr:last-child td {
+            border-bottom: none;
+        }
+        #wpp-form input[type="text"], #wpp-form input[type="password"] {
+            margin-right: 0.7rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--primary-color);
+            font-size: 1rem;
+        }
+        #wpp-form button {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #wpp-form button:hover {
+            background: var(--secondary-color);
+        }
+        @media (max-width: 700px) {
+            .admin-navbar { flex-direction: column; height: auto; padding: 1rem; }
+            .admin-navbar-links { flex-direction: column; gap: 1rem; }
+            .admin-container { margin-top: 110px !important; }
+        }
+        .btn-add-product {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: background 0.2s, transform 0.2s;
+            margin-left: 1rem;
+        }
+        .btn-add-product:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px) scale(1.04);
+        }
+        .fab-home {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            z-index: 4000;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+        .fab-home:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+            color: #fff;
+        }
+        .fab-home i {
+            pointer-events: none;
+        }
+        .btn-action-order {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.97rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 0.7rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-action-order:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px) scale(1.04);
+        }
+        .btn-danger {
+            background: #f44336 !important;
+            color: #fff !important;
+        }
+        .btn-danger:hover {
+            background: #d32f2f !important;
+        }
+        #btn-save-template {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: background 0.2s, transform 0.2s;
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        #btn-save-template:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px) scale(1.04);
+        }
+        #wpp-actual {
+            margin-bottom: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            background: #f0f4fa;
+            border-radius: 12px;
+            color: #222;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 5px solid var(--primary-color);
+        }
+        #wpp-actual .fa-whatsapp {
+            color: #25d366;
+            font-size: 2rem;
+            margin-right: 0.7rem;
+        }
+        #wpp-actual-num {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .wpp-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        #wpp-template {
+            width: 100%;
+            border-radius: 8px;
+            border: 1.5px solid var(--primary-color);
+            padding: 1rem;
+            font-size: 1rem;
+            background: #f8fafc;
+            color: #222;
+            margin-bottom: 1rem;
+            transition: border 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        #wpp-template:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        .notification {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 30px !important;
+            z-index: 9999 !important;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            max-width: 350px;
+            max-height: 80px;
+            overflow-y: auto;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .notification.error {
+            background-color: #f44336;
+        }
+        .notification.success {
+            background-color: #4CAF50;
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Login Overlay -->
+    <nav class="admin-navbar" style="width:100vw;left:0;right:0;margin:0;padding:0;">
+        <div class="admin-navbar-logo">Panel Admin</div>
+        <ul class="admin-navbar-links">
+            <li><a href="#admin-products" data-section="admin-products">Productos</a></li>
+            <li><a href="#admin-orders" data-section="admin-orders">Pedidos</a></li>
+            <li><a href="#admin-wpp" data-section="admin-wpp">WhatsApp</a></li>
+            <li><button id="logout-btn" class="logout-btn">Cerrar Sesión</button></li>
+        </ul>
+    </nav>
     <div id="login-overlay">
         <form class="login-form" id="login-form">
-            <h2>Acceso Administrativo</h2>
+            <h2>Iniciar Sesión</h2>
             <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" required placeholder="Ingrese la contraseña">
+                <input type="text" id="username" placeholder="Usuario" required>
             </div>
-            <button type="submit">Ingresar al Panel</button>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit">Ingresar</button>
         </form>
     </div>
 
-    <!-- Modal de Edición -->
-    <div id="edit-modal" class="edit-modal">
-        <div class="edit-modal-content">
-            <h3>Editar Producto</h3>
-            <form id="edit-product-form">
-                <input type="hidden" id="edit-id">
-                <div class="form-group">
-                    <label for="edit-name">Nombre:</label>
-                    <input type="text" id="edit-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-description">Descripción:</label>
-                    <textarea id="edit-description" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ingredients">Ingredientes (separados por coma):</label>
-                    <input type="text" id="edit-ingredients">
-                    <div id="ingredients-list" class="ingredients-list"></div>
-                </div>
-                <div class="form-group">
-                    <label for="edit-type">Tipo:</label>
-                    <select id="edit-type" required>
-                        <option value="Común">Común</option>
-                        <option value="Especial">Especial</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="edit-price">Precio:</label>
-                    <input type="number" id="edit-price" required min="0">
-                </div>
-                <div class="form-group">
-                    <label for="edit-image">Imagen:</label>
-                    <input type="file" id="edit-image" accept="image/*">
-                    <img id="edit-image-preview" style="max-width: 200px; margin-top: 1rem; display: none;">
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="edit-active"> Producto activo (en stock)
-                    </label>
-                </div>
-                <div class="form-group" style="display: flex; gap: 1rem;">
-                    <button type="submit" class="edit-btn">Guardar Cambios</button>
-                    <button type="button" class="toggle-btn" onclick="closeEditModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <header>
-        <nav>
-            <div class="logo">Burger House</div>
-            <div class="nav-links">
-                <a href="index.html">Menú</a>
-                <a href="admin.html" class="active">Administración</a>
+    <div class="admin-container" id="admin-panel" style="margin-top:70px;">
+        <section class="admin-section" id="admin-products" style="display:block;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+                <h2 style="margin-bottom:0;">Productos Existentes</h2>
+                <button id="btn-add-product" class="btn-add-product">+ Agregar Producto</button>
             </div>
-        </nav>
-    </header>
-
-    <div class="admin-container">
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="products">Productos</button>
-            <button class="tab-button" data-tab="new-product">Nuevo Producto</button>
-            <button class="tab-button" data-tab="orders">Pedidos</button>
-        </div>
-
-        <div id="products" class="tab-content admin-section active">
-            <h2>Gestionar Productos</h2>
-            <div class="product-list" id="product-list">
-                <!-- Los productos se cargarán dinámicamente -->
+            <div id="products-grid" class="burger-grid">
+                <!-- Los productos se cargarán dinámicamente aquí -->
             </div>
-        </div>
-
-        <div id="new-product" class="tab-content admin-section">
+        </section>
+        <section class="admin-section" id="admin-add-product" style="display:none;">
             <h2>Agregar Nuevo Producto</h2>
-            <form id="new-product-form">
+            <form id="add-product-form">
                 <div class="form-group">
                     <label for="name">Nombre:</label>
                     <input type="text" id="name" required>
@@ -506,35 +732,100 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Precio:</label>
-                    <input type="number" id="price" required min="0">
+                    <input type="number" id="price" required>
                 </div>
                 <div class="form-group">
-                    <label for="image-upload">Imagen del producto:</label>
-                    <input type="file" id="image-upload" accept="image/*" required>
-                    <img id="image-preview" class="image-preview" style="display: none;">
+                    <label for="image">Imagen:</label>
+                    <input type="file" id="image" accept="image/*" required>
                 </div>
-                <button type="submit" class="view-details-btn">Agregar Producto</button>
+                <button type="submit">Agregar Producto</button>
             </form>
-        </div>
+        </section>
+        <section class="admin-section" id="admin-orders" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+                <h2 style="margin-bottom:0;">Pedidos Realizados</h2>
+                <div>
+                    <button id="btn-export-orders" class="btn-action-order">Exportar Pedidos</button>
+                    <button id="btn-delete-orders" class="btn-action-order btn-danger">Eliminar Todos</button>
+                </div>
+            </div>
+            <div id="orders-list">
+                <table style="width:100%;background:var(--light-color);color:var(--text-color);border-radius:8px;overflow:hidden;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Entrega</th>
+                            <th>Dirección</th>
+                            <th>Observaciones</th>
+                            <th>Pago</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+        <section class="admin-section" id="admin-wpp" style="display:none;">
+            <h2>Configurar WhatsApp</h2>
+            <div id="wpp-actual">
+                <i class="fab fa-whatsapp"></i>
+                <span>Número actual: <span id="wpp-actual-num">No configurado</span></span>
+            </div>
+            <label for="wpp-template" class="wpp-label">Mensaje predeterminado de WhatsApp:</label>
+            <textarea id="wpp-template" rows="4" placeholder="Ej: ¡Gracias por tu pedido! Pronto nos comunicaremos contigo."></textarea>
+            <button id="btn-save-template" type="button" style="margin-bottom:1rem;">Guardar Mensaje</button>
+            <form id="wpp-form">
+                <label for="wpp-number">Número de WhatsApp (solo admin):</label>
+                <input type="text" id="wpp-number" placeholder="Ej: 5491112345678" required style="width:200px;">
+                <button type="submit">Guardar</button>
+            </form>
+            <div id="wpp-msg" style="margin-top:10px;"></div>
+        </section>
+    </div>
 
-        <div id="orders" class="tab-content admin-section">
-            <h2>Pedidos Realizados</h2>
-            <div class="admin-actions">
-                <button class="admin-btn" onclick="exportOrders()">Exportar Pedidos</button>
-                <button class="admin-btn delete" onclick="clearOrders()">Borrar Pedidos</button>
-            </div>
-            <div class="orders-list" id="orders-list">
-                <!-- Los pedidos se cargarán dinámicamente -->
-            </div>
+    <!-- Modal de edición -->
+    <div id="edit-modal" class="edit-modal">
+        <div class="edit-modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Producto</h2>
+            <form id="edit-product-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-name">Nombre:</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Descripción:</label>
+                    <textarea id="edit-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-type">Tipo:</label>
+                    <select id="edit-type" required>
+                        <option value="Común">Común</option>
+                        <option value="Especial">Especial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-price">Precio:</label>
+                    <input type="number" id="edit-price" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-image">Nueva Imagen (opcional):</label>
+                    <input type="file" id="edit-image" accept="image/*">
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
         </div>
     </div>
 
-    <!-- Botón de retorno -->
-    <a href="index.html" class="return-btn">
+    <div class="notification" id="notification"></div>
+
+    <a href="index.html" class="fab-home" title="Ir al sitio principal">
         <i class="fas fa-home"></i>
     </a>
 
-    <!-- Scripts -->
     <script src="js/products.js"></script>
     <script src="js/admin.js"></script>
 </body>

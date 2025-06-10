@@ -23,4 +23,8 @@ npm-debug.log*
 *.swo
 
 # Archivos de configuración local
-config.local.js 
+config.local.js
+
+# Archivos locales de documentación
+inicio.txt
+cambios.txt 

@@ -1,182 +1,133 @@
+// cart.js
+// Este archivo contiene la lógica del carrito de compras: agregar, quitar, actualizar cantidades y renderizar el carrito.
+
 const cartModule = {
-    cart: JSON.parse(localStorage.getItem('cart')) || [],
+    cart: [], // Arreglo que almacena los productos en el carrito
 
-    addToCart(item) {
-        const existingItem = this.cart.find(i => i.id === item.id);
-        
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            this.cart.push({
-                ...item,
-                quantity: 1
-            });
-        }
-        
-        this.saveCart();
+    /**
+     * Inicializa el carrito desde localStorage y lo renderiza en pantalla.
+     */
+    init() {
+        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        this.renderCart();
         this.updateCartCount();
-        this.updateCartDisplay();
-        this.showNotification(`${item.name} añadido al carrito`);
     },
 
-    updateCartCount() {
-        const totalItems = this.cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById('cart-count').textContent = totalItems;
-    },
-
-    updateCartDisplay() {
-        const cartItems = document.getElementById('cart-items');
-        const cartTotalAmount = document.getElementById('cart-total-amount');
-        
-        if (this.cart.length === 0) {
-            cartItems.innerHTML = '<p class="empty-cart">No hay productos en el carrito</p>';
-            cartTotalAmount.textContent = '0';
-            return;
-        }
-
-        cartItems.innerHTML = this.cart.map(item => `
-            <div class="cart-item">
-                <div class="cart-item-details">
-                    <h4>${item.name}</h4>
-                    <p class="item-type">${item.type}</p>
-                    <p class="item-price">$${item.price}</p>
-                    <div class="quantity-controls">
-                        <button onclick="cartModule.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                        <span>${item.quantity}</span>
-                        <button onclick="cartModule.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                    </div>
-                </div>
-                <button class="remove-item" onclick="cartModule.removeFromCart(${item.id})">×</button>
-            </div>
-        `).join('');
-
-        const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        cartTotalAmount.textContent = total;
-    },
-
-    updateQuantity(itemId, newQuantity) {
-        if (newQuantity < 0) return;
-        
-        const itemIndex = this.cart.findIndex(i => i.id === itemId);
-        if (itemIndex === -1) return;
-        
-        if (newQuantity === 0) {
-            this.cart.splice(itemIndex, 1);
+    /**
+     * Agrega una hamburguesa al carrito. Si ya existe (por id y opción), incrementa la cantidad.
+     * @param {Object} burger - Objeto del producto a agregar
+     */
+    addToCart(burger) {
+        const found = this.cart.find(item => item.id === burger.id && item.option === burger.option);
+        if (found) {
+            found.quantity = (found.quantity || 1) + 1;
         } else {
-            this.cart[itemIndex].quantity = newQuantity;
+            this.cart.push({ ...burger, quantity: 1 });
         }
-        
         this.saveCart();
+        this.renderCart();
         this.updateCartCount();
-        this.updateCartDisplay();
     },
 
-    removeFromCart(itemId) {
-        const itemIndex = this.cart.findIndex(i => i.id === itemId);
-        
-        if (itemIndex > -1) {
-            this.cart.splice(itemIndex, 1);
-            this.saveCart();
-            this.updateCartCount();
-            this.updateCartDisplay();
+    /**
+     * Elimina un producto del carrito por su índice.
+     * @param {number} index - Índice del producto a eliminar
+     */
+    removeFromCart(index) {
+        this.cart.splice(index, 1);
+        this.saveCart();
+        this.renderCart();
+        this.updateCartCount();
+    },
+
+    /**
+     * Actualiza la cantidad de un producto en el carrito.
+     * @param {number} index - Índice del producto
+     * @param {number} delta - Cambio en la cantidad (+1 o -1)
+     */
+    updateQuantity(index, delta) {
+        if (this.cart[index]) {
+            this.cart[index].quantity += delta;
+            if (this.cart[index].quantity <= 0) {
+                this.removeFromCart(index);
+            } else {
+                this.saveCart();
+                this.renderCart();
+                this.updateCartCount();
+            }
         }
     },
 
+    /**
+     * Vacía el carrito completamente.
+     */
+    clearCart() {
+        this.cart = [];
+        this.saveCart();
+        this.renderCart();
+        this.updateCartCount();
+    },
+
+    /**
+     * Devuelve los productos actuales del carrito.
+     * @returns {Array}
+     */
+    getCartItems() {
+        return this.cart;
+    },
+
+    /**
+     * Calcula el total del carrito.
+     * @returns {number}
+     */
+    getTotal() {
+        return this.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    },
+
+    /**
+     * Guarda el carrito en localStorage.
+     */
     saveCart() {
         localStorage.setItem('cart', JSON.stringify(this.cart));
     },
 
-    showNotification(message) {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.classList.add('show');
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
+    /**
+     * Actualiza el contador visual del carrito en el header.
+     */
+    updateCartCount() {
+        document.getElementById('cart-count').textContent = this.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
 
-    showCart() {
-        this.updateCartDisplay();
-        document.getElementById('cart-modal').style.display = 'block';
-    },
-
-    init() {
-        this.updateCartCount();
-        
-        // Event Listeners
-        document.querySelector('.cart-icon').addEventListener('click', () => this.showCart());
-        
-        // Cerrar modal del carrito
-        document.querySelectorAll('.close').forEach(closeBtn => {
-            closeBtn.addEventListener('click', () => {
-                document.getElementById('cart-modal').style.display = 'none';
-            });
-        });
-
-        // Cerrar modal al hacer clic fuera
-        window.addEventListener('click', (e) => {
-            const cartModal = document.getElementById('cart-modal');
-            if (e.target === cartModal) {
-                cartModal.style.display = 'none';
-            }
-        });
-
-        // Formulario de checkout
-        document.getElementById('checkout-form').addEventListener('submit', this.handleCheckout.bind(this));
-    },
-
-    handleCheckout(e) {
-        e.preventDefault();
-        
-        const paymentMethod = document.getElementById('payment-method').value;
-        const observations = document.getElementById('observations').value;
-        const deliveryType = document.querySelector('.delivery-option.selected')?.textContent.trim();
-        const address = document.getElementById('address').value;
-
-        if (!paymentMethod || !deliveryType) {
-            this.showNotification('Por favor complete todos los campos requeridos');
+    /**
+     * Renderiza el contenido del carrito en el modal.
+     */
+    renderCart() {
+        const cartItems = document.getElementById('cart-items');
+        if (!cartItems) return;
+        if (this.cart.length === 0) {
+            cartItems.innerHTML = '<div class="empty-cart">El carrito está vacío</div>';
+            document.getElementById('cart-total-amount').textContent = '0';
             return;
         }
-
-        if (deliveryType === 'Delivery' && !address) {
-            this.showNotification('Por favor ingrese una dirección de entrega');
-            return;
-        }
-
-        // Crear el objeto del pedido
-        const order = {
-            items: [...this.cart],
-            paymentMethod,
-            deliveryType,
-            address: deliveryType === 'Delivery' ? address : 'Retira en local',
-            observations: observations || 'Sin observaciones',
-            total: this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-            date: new Date().toISOString(),
-            status: 'pendiente'
-        };
-
-        // Obtener pedidos existentes y agregar el nuevo
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        orders.push(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-
-        // Limpiar carrito
-        this.cart = [];
-        this.saveCart();
-        this.updateCartCount();
-        this.updateCartDisplay();
-        
-        // Cerrar modal y mostrar confirmación
-        document.getElementById('cart-modal').style.display = 'none';
-        this.showNotification('¡Pedido realizado con éxito!');
-
-        // Limpiar formulario
-        document.getElementById('payment-method').value = '';
-        document.getElementById('address').value = '';
-        document.getElementById('observations').value = '';
-        document.querySelectorAll('.delivery-option').forEach(opt => {
-            opt.classList.remove('selected');
-        });
+        cartItems.innerHTML = this.cart.map((item, i) => `
+            <div class="cart-item">
+                <!--<img src="${item.image_url ? (item.image_url.startsWith('/uploads/') ? item.image_url : '/uploads/' + item.image_url.replace(/^.*[\\\/]/, '')) : item.image}" class="cart-item-image" alt="${item.name}">-->
+                <div class="cart-item-details">
+                    <h4>${item.name}</h4>
+                    <div class="item-type">${item.option ? (item.option === 'doble' ? 'Doble' : 'Simple') : ''}</div>
+                    <div class="item-price">$${item.price}</div>
+                    <div class="quantity-controls">
+                        <button onclick="cartModule.updateQuantity(${i}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="cartModule.updateQuantity(${i}, 1)">+</button>
+                        <button class="remove-item" onclick="cartModule.removeFromCart(${i})">&times;</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('cart-total-amount').textContent = this.getTotal();
     }
-}; 
+};
+
+// Expone el módulo globalmente para ser usado desde el HTML inline
+window.cartModule = cartModule; 

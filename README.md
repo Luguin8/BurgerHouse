@@ -4,11 +4,11 @@ Aplicación web de comida rápida desarrollada con HTML, CSS y JavaScript vanill
 
 ## Características 🌟
 
-- Catálogo de productos con imágenes y descripciones detalladas
-- Sistema de carrito de compras con persistencia local
+- Catálogo de productos con imágenes y descripciones detalladas (desde la base de datos, vía API REST)
+- Sistema de carrito de compras en el frontend
 - Opciones de personalización (hamburguesa simple/doble)
-- Sistema de pedidos con opciones de entrega
-- Panel de administración para gestión de productos y pedidos
+- Sistema de pedidos con opciones de entrega, integrados con la base de datos
+- Panel de administración para gestión de productos y pedidos (CRUD completo vía API)
 - Diseño responsive y moderno
 - Tema oscuro para mejor experiencia visual
 
@@ -18,13 +18,13 @@ Aplicación web de comida rápida desarrollada con HTML, CSS y JavaScript vanill
   - HTML5
   - CSS3
   - JavaScript (Vanilla)
-  - LocalStorage para persistencia de datos
+  - Consumo de API REST para productos y pedidos
 
 - Backend:
   - Node.js
   - Express
   - SQLite
-  - JWT para autenticación
+  - JWT para autenticación (solo en backend, autenticación básica en admin por ahora)
 
 ## Estructura del Proyecto 📁
 
@@ -34,21 +34,29 @@ burger-house/
 │   ├── index.html     # Página principal
 │   ├── admin.html     # Panel de administración
 │   ├── styles.css     # Estilos globales
-│   └── js/           # Scripts de JavaScript
-├── backend/           # Código del servidor
-│   ├── server.js     # Punto de entrada
-│   ├── routes/       # Rutas de la API
-│   └── db/          # Configuración de base de datos
-└── docs/            # Documentación adicional
+│   └── assets/        # Imágenes y recursos
+├── backend/           # Código del servidor y API REST
+│   ├── index.js       # Punto de entrada del backend
+│   ├── routes/        # Rutas de la API (productos, pedidos, auth)
+│   ├── data/          # Base de datos SQLite
+│   └── uploads/       # Imágenes subidas por el admin
+├── documentacion/     # Notas y documentación interna
+└── README.md          # Este archivo
 ```
+
+## Flujo de trabajo actualizado 🚀
+
+- El frontend **NO usa localStorage** para productos ni pedidos. Todo se gestiona vía API REST.
+- El panel de administración permite crear, editar, eliminar y activar/desactivar productos, todo conectado a la base de datos.
+- Los pedidos se envían al backend y se almacenan en la base de datos.
+- El backend expone endpoints REST para productos y pedidos.
 
 ## Características del Panel de Administración 👨‍💼
 
 - Gestión completa de productos (CRUD)
 - Visualización y gestión de pedidos
-- Exportación de pedidos a CSV
-- Estadísticas básicas
-- Control de stock
+- Exportación de pedidos a CSV (próximamente)
+- Control de stock (próximamente)
 
 ## Contribuir 🤝
 
@@ -61,8 +69,6 @@ burger-house/
 ## Licencia 📄
 
 Este proyecto está protegido bajo una licencia propietaria. Todos los derechos están reservados y su uso, modificación o distribución está estrictamente prohibido sin autorización expresa por escrito.
-
-Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Contacto 📧
 

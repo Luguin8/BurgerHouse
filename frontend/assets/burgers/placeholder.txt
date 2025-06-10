@@ -1,0 +1,20 @@
+Por favor, reemplaza este archivo con las siguientes imágenes de hamburguesas:
+
+1. classic-burger.jpg - Hamburguesa clásica con lechuga, tomate y queso
+2. cheese-burger.jpg - Hamburguesa con doble queso
+3. bacon-burger.jpg - Hamburguesa con tocino y queso
+4. veggie-burger.jpg - Hamburguesa vegetariana
+5. chicken-burger.jpg - Hamburguesa de pollo
+6. special-burger.jpg - Hamburguesa especial de la casa
+
+Especificaciones de las imágenes:
+- Dimensiones: 800x600 píxeles
+- Formato: JPG
+- Calidad: Alta (pero no más de 200KB por imagen)
+- Fondo: Claro o transparente
+- Perspectiva: Vista frontal o en ángulo de 45 grados
+
+Puedes obtener imágenes libres de derechos de sitios como:
+- Unsplash (https://unsplash.com)
+- Pexels (https://pexels.com)
+- Pixabay (https://pixabay.com) 

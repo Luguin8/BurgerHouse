@@ -8,11 +8,23 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!--
+    ========================================
+    PÁGINA PRINCIPAL - BURGER HOUSE
+    ========================================
+    Estructura general:
+    - Header con navegación y carrito
+    - Sección de promoción del día
+    - Sección de menú de hamburguesas
+    - Modales para detalles y carrito
+    - Notificación flotante
+    - Loader y scripts
+    -->
     <header>
         <nav>
             <div class="logo">Burger House</div>
             <div class="nav-links">
-                <div class="cart-icon">
+                <div class="cart-icon" id="cart-icon">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-count">0</span>
                 </div>
@@ -47,11 +59,17 @@
         </section>
     </main>
 
-    <!-- Modal de Detalles de Hamburguesa -->
+    <!--
+    ========================================
+    MODAL DE DETALLES DE HAMBURGUESA
+    ========================================
+    Permite ver información ampliada y seleccionar opción simple/doble.
+    -->
     <div id="burger-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="modal-title"></h2>
+            <!-- <img id="modal-img" src="" alt="Hamburguesa"> -->
             <p id="modal-description"></p>
             <p id="modal-type"></p>
             <p id="modal-price"></p>
@@ -71,7 +89,12 @@
         </div>
     </div>
 
-    <!-- Modal del Carrito -->
+    <!--
+    ========================================
+    MODAL DEL CARRITO DE COMPRAS
+    ========================================
+    Muestra los productos agregados, permite editar cantidades y realizar el pedido.
+    -->
     <div id="cart-modal" class="modal">
         <div class="modal-content cart-modal-content">
             <span class="close">&times;</span>
@@ -114,71 +137,195 @@
         </div>
     </div>
 
-    <!-- Notificación -->
+    <!--
+    ========================================
+    NOTIFICACIÓN Y LOADER
+    ========================================
+    Muestra mensajes de éxito/error y animación de carga.
+    -->
     <div id="notification" class="notification"></div>
 
-    <!-- Scripts -->
+    <!-- Loader -->
+    <div id="loader" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center;">
+        <div style="border:8px solid #f3f3f3;border-top:8px solid #ff5722;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;"></div>
+    </div>
+    <style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+
+    <!--
+    ========================================
+    SCRIPTS PRINCIPALES
+    ========================================
+    Incluye lógica de productos, carrito y funciones de la página.
+    -->
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script>
-        // Array de imágenes de stock para hamburguesas
-        const burgerImages = [
-            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3',
-            'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixlib=rb-4.0.3',
-            'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3',
-            'https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3',
-            'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?ixlib=rb-4.0.3',
-            'https://images.unsplash.com/photo-1553979459-d2229ba7433b?ixlib=rb-4.0.3'
-        ];
-
+        // Variables globales
         let currentBurger = null;
         let selectedOption = null;
         let deliveryType = null;
 
+        // Internacionalización básica
+        const translations = {
+            es: {
+                promo: 'Promoción del Día',
+                combo: 'Combo Especial',
+                menu: 'Nuestras Hamburguesas',
+                addToCart: 'Añadir al Carrito',
+                cart: 'Tu Carrito',
+                total: 'Total',
+                checkout: 'Realizar Pedido',
+                delivery: 'Delivery',
+                local: 'Retirar en Local',
+                address: 'Dirección de Entrega',
+                observations: 'Observaciones',
+                payment: 'Método de Pago',
+                cash: 'Efectivo',
+                card: 'Tarjeta',
+                success: '¡Pedido realizado con éxito!',
+                error: 'Error al realizar el pedido',
+                selectOption: 'Por favor selecciona una opción',
+                selectDelivery: 'Por favor selecciona un tipo de entrega',
+                enterAddress: 'Por favor ingresa una dirección de entrega',
+                details: 'Ver Detalles'
+            },
+            en: {
+                promo: 'Deal of the Day',
+                combo: 'Special Combo',
+                menu: 'Our Burgers',
+                addToCart: 'Add to Cart',
+                cart: 'Your Cart',
+                total: 'Total',
+                checkout: 'Checkout',
+                delivery: 'Delivery',
+                local: 'Pick up at Store',
+                address: 'Delivery Address',
+                observations: 'Notes',
+                payment: 'Payment Method',
+                cash: 'Cash',
+                card: 'Card',
+                success: 'Order placed successfully!',
+                error: 'Error placing order',
+                selectOption: 'Please select an option',
+                selectDelivery: 'Please select a delivery type',
+                enterAddress: 'Please enter a delivery address',
+                details: 'View Details'
+            }
+        };
+        let currentLang = 'es';
+        function setLang(lang) {
+            currentLang = lang;
+            document.querySelector('.promo-section h2').textContent = translations[lang].promo;
+            document.querySelector('.promo-card h3').textContent = translations[lang].combo;
+            document.querySelector('.menu-section h2').textContent = translations[lang].menu;
+            document.getElementById('modal-add-to-cart').textContent = translations[lang].addToCart;
+            document.querySelector('.cart-total span').textContent = translations[lang].total + ':';
+            document.querySelector('#checkout-form button[type="submit"]').textContent = translations[lang].checkout;
+            document.querySelectorAll('.delivery-option')[0].textContent = translations[lang].local;
+            document.querySelectorAll('.delivery-option')[1].textContent = translations[lang].delivery;
+            document.querySelector('label[for="address"]').textContent = translations[lang].address + ':';
+            document.querySelector('label[for="observations"]').textContent = translations[lang].observations + ':';
+            document.querySelector('label[for="payment-method"]').textContent = translations[lang].payment + ':';
+            document.querySelectorAll('#payment-method option')[1].textContent = translations[lang].cash;
+            document.querySelectorAll('#payment-method option')[2].textContent = translations[lang].card;
+        }
+        // Botón para cambiar idioma
+        const langBtn = document.createElement('button');
+        langBtn.textContent = 'EN';
+        langBtn.style.position = 'fixed';
+        langBtn.style.bottom = '20px';
+        langBtn.style.left = '20px';
+        langBtn.style.zIndex = 9999;
+        langBtn.onclick = () => {
+            if (currentLang === 'es') {
+                setLang('en');
+                langBtn.textContent = 'ES';
+            } else {
+                setLang('es');
+                langBtn.textContent = 'EN';
+            }
+        };
+        document.body.appendChild(langBtn);
+        document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+
+        // Loader helpers
+        function showLoader() {
+            document.getElementById('loader').style.display = 'flex';
+        }
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        // Función para cargar los productos en la página
+        async function loadProducts() {
+            showLoader();
+            console.log('Cargando productos desde la API...');
+            const burgerGrid = document.querySelector('.burger-grid');
+            try {
+                const response = await fetch('http://localhost:3000/products');
+                const data = await response.json();
+                const products = data.products || data; // Soporta paginación y sin paginación
+                console.log('Productos obtenidos:', products);
+                burgerGrid.innerHTML = products
+                    .filter(burger => burger.active !== false) // Si no existe el campo, se asume activo
+                    .map((burger) => {
+                        return `
+                            <div class="burger-card" data-id="${burger.id}">
+                                <img src="${burger.image_url ? (burger.image_url.startsWith('/uploads/') ? burger.image_url : '/uploads/' + burger.image_url.replace(/^.*[\\\/]/, '')) : burger.image}" alt="${burger.name}">
+                                <h3>${burger.name}</h3>
+                                <p>${burger.description}</p>
+                                <p class="price">$${burger.price}</p>
+                                <button class="view-details-btn" onclick="showBurgerDetails(${burger.id})">Ver Detalles</button>
+                            </div>
+                        `;
+                    }).join('');
+            } catch (error) {
+                burgerGrid.innerHTML = '<p>Error al cargar productos.</p>';
+                console.error('Error al cargar productos:', error);
+            }
+            hideLoader();
+        }
+
         // Inicializar la aplicación cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', () => {
-            // Cargar productos en la página
-            const burgerGrid = document.querySelector('.burger-grid');
-            const products = productsModule.getAllProducts();
-            
-            burgerGrid.innerHTML = products
-                .filter(burger => burger.active)
-                .map((burger, index) => {
-                    // Asignar una imagen de stock de manera cíclica
-                    const stockImage = burgerImages[index % burgerImages.length];
-                    return `
-                        <div class="burger-card" data-id="${burger.id}">
-                            <img src="${burger.image || stockImage}" alt="${burger.name}">
-                            <h3>${burger.name}</h3>
-                            <p>${burger.description}</p>
-                            <p class="price">$${burger.price}</p>
-                            <button class="view-details-btn" onclick="showBurgerDetails(${burger.id})">Ver Detalles</button>
-                        </div>
-                    `;
-                }).join('');
+            // Cargar productos inicialmente
+            loadProducts();
 
             // Inicializar el módulo del carrito
             cartModule.init();
 
             // Event listeners para cerrar modales
-            document.querySelectorAll('.close').forEach(closeBtn => {
-                closeBtn.addEventListener('click', function() {
-                    this.closest('.modal').style.display = 'none';
-                    resetOptions();
-                });
-            });
-
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
                     resetOptions();
                 }
+            }
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    this.closest('.modal').style.display = 'none';
+                };
+            });
+            // Cerrar modal al hacer click fuera del contenido
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModal(this.id);
+                    }
+                });
             });
 
             // Event listener para el botón de añadir al carrito en el modal
             document.getElementById('modal-add-to-cart').addEventListener('click', () => {
                 if (!currentBurger || !selectedOption) {
-                    showNotification('Por favor selecciona una opción');
+                    showNotification(translations[currentLang].selectOption);
                     return;
                 }
 
@@ -197,27 +344,96 @@
                 document.getElementById('burger-modal').style.display = 'none';
                 resetOptions();
             });
+
+            // Event listener para el formulario de checkout
+            document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoader();
+                if (!deliveryType) {
+                    showNotification(translations[currentLang].selectDelivery);
+                    hideLoader();
+                    return;
+                }
+                if (deliveryType === 'delivery' && !document.getElementById('address').value.trim()) {
+                    showNotification(translations[currentLang].enterAddress);
+                    hideLoader();
+                    return;
+                }
+                const order = {
+                    items: cartModule.getCartItems(),
+                    total: cartModule.getTotal(),
+                    deliveryType,
+                    address: document.getElementById('address').value,
+                    observations: document.getElementById('observations').value,
+                    paymentMethod: document.getElementById('payment-method').value,
+                    date: new Date().toLocaleString()
+                };
+                try {
+                    // 1. Guardar en backend
+                    const response = await fetch('http://localhost:3000/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(order)
+                    });
+                    if (!response.ok) throw new Error('Error al guardar el pedido');
+                    // 2. Generar mensaje de WhatsApp
+                    const wppTemplate = localStorage.getItem('wppTemplate');
+                    let msg = '';
+                    if (wppTemplate) msg += `${encodeURIComponent(wppTemplate)}%0A%0A`;
+                    msg += `*Nuevo pedido*%0A`;
+                    order.items.forEach(item => {
+                        msg += `- ${item.name} (${item.option === 'doble' ? 'Doble' : 'Simple'}) x${item.quantity} - $${item.price * item.quantity}%0A`;
+                    });
+                    msg += `Total: $${order.total}%0A`;
+                    msg += `Tipo de entrega: ${order.deliveryType}%0A`;
+                    if (order.deliveryType === 'delivery') msg += `Dirección: ${order.address}%0A`;
+                    if (order.observations) msg += `Observaciones: ${order.observations}%0A`;
+                    msg += `Pago: ${order.paymentMethod}%0A`;
+                    msg += `Fecha: ${order.date}`;
+                    // Obtener número de WhatsApp
+                    const wppNumber = localStorage.getItem('wppNumber') || '5491112345678';
+                    const url = `https://wa.me/${wppNumber}?text=${msg}`;
+                    window.open(url, '_blank');
+                    cartModule.clearCart();
+                    document.getElementById('cart-modal').style.display = 'none';
+                    showNotification('Pedido enviado y guardado correctamente');
+                } catch (error) {
+                    console.error('Error al guardar o enviar el pedido:', error);
+                    showNotification('Error al guardar o enviar el pedido', true);
+                }
+                hideLoader();
+            });
+
+            // Feedback visual en botones de acción
+            document.querySelectorAll('button, .view-details-btn').forEach(btn => {
+                btn.addEventListener('mousedown', () => btn.style.transform = 'scale(0.96)');
+                btn.addEventListener('mouseup', () => btn.style.transform = 'scale(1)');
+                btn.addEventListener('mouseleave', () => btn.style.transform = 'scale(1)');
+            });
+
+            // Event listener para abrir el modal del carrito al hacer click en el icono del carrito en el header
+            document.getElementById('cart-icon').addEventListener('click', function() {
+                document.getElementById('cart-modal').style.display = 'block';
+            });
         });
 
         // Función para mostrar detalles de la hamburguesa
-        function showBurgerDetails(burger) {
-            // Si es un ID, buscar en los productos
-            if (typeof burger === 'number' || typeof burger === 'string') {
-                burger = productsModule.getProductById(burger);
-                if (!burger) return;
+        async function showBurgerDetails(burgerId) {
+            try {
+                const response = await fetch(`http://localhost:3000/products/${burgerId}`);
+                if (!response.ok) return;
+                const burger = await response.json();
+                currentBurger = burger;
+                document.getElementById('modal-title').textContent = burger.name;
+                document.getElementById('modal-description').textContent = burger.description;
+                document.getElementById('modal-type').textContent = `Tipo: ${burger.category || burger.type}`;
+                document.getElementById('modal-price').textContent = `Precio: $${burger.price}`;
+                document.getElementById('simple-price').textContent = `$${burger.price}`;
+                document.getElementById('doble-price').textContent = `$${burger.price + 500}`;
+                document.getElementById('burger-modal').style.display = 'block';
+            } catch (error) {
+                showNotification('Error al cargar detalles del producto');
             }
-
-            currentBurger = burger;
-            document.getElementById('modal-title').textContent = burger.name;
-            document.getElementById('modal-description').textContent = burger.description;
-            document.getElementById('modal-type').textContent = `Tipo: ${burger.type}`;
-            document.getElementById('modal-price').textContent = `Precio: $${burger.price}`;
-            
-            // Actualizar precios de las opciones
-            document.getElementById('simple-price').textContent = `$${burger.price}`;
-            document.getElementById('doble-price').textContent = `$${burger.price + 500}`;
-            
-            document.getElementById('burger-modal').style.display = 'block';
         }
 
         // Función para seleccionar una opción
@@ -257,15 +473,21 @@
         }
 
         // Función para mostrar notificaciones
-        function showNotification(message) {
+        function showNotification(message, isError = false) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.classList.add('show');
-            
+            notification.classList.remove('error', 'show');
+            void notification.offsetWidth; // Forzar reflow para reiniciar animación
+            notification.classList.add(isError ? 'error' : 'show');
+            notification.style.display = 'block';
             setTimeout(() => {
-                notification.classList.remove('show');
+                notification.classList.remove('error', 'show');
+                notification.style.display = 'none';
             }, 3000);
         }
     </script>
+    <footer style="width:100%;text-align:center;padding:20px 0;">
+        <button onclick="window.location.href='admin.html'" style="padding:10px 20px;background:#ff5722;color:#fff;border:none;border-radius:5px;cursor:pointer;">Ir a Admin</button>
+    </footer>
 </body>
 </html> 
